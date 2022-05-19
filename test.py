@@ -1,3 +1,70 @@
+<<<<<<< HEAD
+from env import Connect4
+from agent import DQNAgent
+from torch import load
+Agent = DQNAgent(state_size=42,action_size=7,seed=0)
+env = Connect4()
+
+try:
+    Agent.qnetwork_local.load_state_dict(load('q_dict.pt'))
+    print("Loaded Agent")
+except:
+    print("Agent not found")
+
+def player_input():
+    col = int(input("Make your Selection(0-6):"))
+    if col not in range(7):
+        print("Invalid Selection")
+        player_input()
+    return col
+
+def AI_input(state):
+  print("CPU Turn")
+  while True:
+    action = Agent.take_action(state,eps=0.01)
+    if env.is_valid_location(action):
+      
+      return action
+
+while True:
+  print("Choose Player")
+  p = int(input())
+
+  env.reset() 
+  env.render()
+
+
+  if p == 1:
+    while not env.done:
+      env.step(player_input())
+      env.render()
+      if env.done:
+        break
+      env.step(AI_input(env.board.flatten()))
+      env.render()
+  if p == 2:
+    while not env.done:
+      env.step(AI_input(env.board.flatten()))
+      env.render()
+      if env.done:
+        break
+      env.step(player_input())
+      env.render()
+  if p == 3:
+    while not env.done:
+      env.step(AI_input(env.board.flatten()))
+      env.render()
+  if p ==4:
+      while not env.done:
+          env.step(player_input())
+          env.render()
+
+
+  print(env.winner)
+  print("Play Again? (Y/N)")
+  if input() == 'N':
+    break
+=======
 from env import Connect4
 import joblib
 from agent import Agent
@@ -69,3 +136,4 @@ while True:
   print("Play Again? (Y/N)")
   if input() == 'N':
     break
+>>>>>>> b894e5398a716da9d1fdd068623d073ab2482806
