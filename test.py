@@ -1,15 +1,17 @@
-<<<<<<< HEAD
 from env import Connect4
 from agent import DQNAgent
 from torch import load
-Agent = DQNAgent(state_size=42,action_size=7,seed=0)
+Agent1 = DQNAgent(state_size=42,action_size=7,seed=0)
+Agent2 = DQNAgent(state_size=42,action_size=7,seed=0)
 env = Connect4()
 
 try:
-    Agent.qnetwork_local.load_state_dict(load('q_dict.pt'))
-    print("Loaded Agent")
+    Agent1.qnetwork_local.load_state_dict(load('q_dict1.pt'))
+    print("Loaded Agent 1")
+    Agent2.qnetwork_local.load_state_dict(load('q_dict2.pt'))
+    print("Loaded Agent 2")
 except:
-    print("Agent not found")
+    print("Agents not found")
 
 def player_input():
     col = int(input("Make your Selection(0-6):"))
@@ -18,10 +20,13 @@ def player_input():
         player_input()
     return col
 
-def AI_input(state):
+def AI_input(state,p):
   print("CPU Turn")
   while True:
-    action = Agent.take_action(state,eps=0.01)
+    if p == 1:
+      action = Agent2.take_action(state,eps=0.01)
+    if p ==2:
+      action = Agent1.take_action(state,eps=0.01)
     if env.is_valid_location(action):
       
       return action
@@ -40,11 +45,11 @@ while True:
       env.render()
       if env.done:
         break
-      env.step(AI_input(env.board.flatten()))
+      env.step(AI_input(env.board.flatten(),p))
       env.render()
   if p == 2:
     while not env.done:
-      env.step(AI_input(env.board.flatten()))
+      env.step(AI_input(env.board.flatten(),p))
       env.render()
       if env.done:
         break
@@ -52,7 +57,11 @@ while True:
       env.render()
   if p == 3:
     while not env.done:
-      env.step(AI_input(env.board.flatten()))
+      env.step(AI_input(env.board.flatten(),2))
+      env.render()
+      if env.done:
+        break
+      env.step(AI_input(env.board.flatten(),1))
       env.render()
   if p ==4:
       while not env.done:
@@ -64,76 +73,3 @@ while True:
   print("Play Again? (Y/N)")
   if input() == 'N':
     break
-=======
-from env import Connect4
-import joblib
-from agent import Agent
-
-Agent1 = Agent(epsilon=0.1)
-Agent2 = Agent(epsilon=0.1)
-
-try:
-    Q1 = joblib.load('q_table1.pkl')
-    Agent1.Q = Q1
-    Q2 = joblib.load('q_table2.pkl')
-    Agent2.Q = Q2
-    print("Loaded Q table")
-except:
-    print("No Q table found")
-
-def player_input():
-    col = int(input("Make your Selection(0-6):"))
-    if col not in range(7):
-        print("Invalid Selection")
-        player_input()
-    return col
-
-def AI_input(state,p):
-  while True:
-    if p == 1:
-      action = Agent2.take_action(state)
-    else:
-      action = Agent1.take_action(state)
-    if env.is_valid_location(action):
-      return action
-
-env = Connect4()
-while True:
-  print("Choose Player")
-  p = int(input())
-
-  env.reset() 
-  env.render()
-
-
-  if p == 1:
-    while not env.done:
-      env.step(player_input())
-      env.render()
-      if env.done:
-        break
-      env.step(AI_input(env.state,p))
-      env.render()
-  if p == 2:
-    while not env.done:
-      env.step(AI_input(env.state,p))
-      env.render()
-      if env.done:
-        break
-      env.step(player_input())
-      env.render()
-  if p == 3:
-    while not env.done:
-      env.step(AI_input(env.state,1))
-      env.render()
-      if env.done:
-        break
-      env.step(AI_input(env.state,2))
-      env.render()
-
-
-  print(env.winner)
-  print("Play Again? (Y/N)")
-  if input() == 'N':
-    break
->>>>>>> b894e5398a716da9d1fdd068623d073ab2482806
